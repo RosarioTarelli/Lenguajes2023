@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int main(void) {
+  float float1;
+  char *p = (char *) &float1;
+  float1 = 12.25;
+ 
+  printf("%.2x",*p);
+  printf("%.2x",*(p+1));
+  printf("%.2x",*(p+2));
+  printf("%.2x",*(p+3));
+
+  return 0;
+}
