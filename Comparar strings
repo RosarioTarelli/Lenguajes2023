@@ -3,8 +3,8 @@
 int comparar_cadenas (char*, char*);
 
 int main(void) {
-  char string1[500];
-  char string2[500];
+  char string1[20];
+  char string2[20];
   printf("Escriba la primer cadena: ");
   scanf("%s", string1);
   printf("Escriba la segunda cadena: ");
