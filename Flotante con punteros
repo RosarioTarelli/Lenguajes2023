@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 int main(void) {
-  float float1;
-  char *p = (char *) &float1;
-  float1 = 12.25;
+  float decimal1;
+  char *p = (char *) &decimal1;
+  decimal1 = 12.25;
  
   printf("%.2x",*p);
   printf("%.2x",*(p+1));
