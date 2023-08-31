@@ -1,0 +1,94 @@
+#define BUTTON 8
+#define RETARD 40
+#define MAX 15
+typedef enum {
+  BUTTON_UP,
+  BUTTON_FALLING,
+  BUTTON_DOWN,
+  BUTTON_RISING
+} debounceState_t;
+
+const byte seg[16] = {
+  B01111111,
+  B00001101,
+  B10110110,
+  B10011110,
+  B11001100,
+  B11011010,
+  B11111010,
+  B00001110,
+  B11111110,
+  B11001110,
+  B11101110,
+  B11111000,
+  B01110010,
+  B10111100,
+  B11110010,
+  B11100010,
+};
+
+debounceState_t estadoActual;
+unsigned long ultVez;
+int contador = 0; 
+void debounceFSM_init(void);
+void debounceFSM_update(void);
+void buttonPressed(void);
+
+void setup() {
+  pinMode(BUTTON, INPUT);
+  debounceFSM_init();
+  DDRD = B11111111;
+}
+
+void loop() {
+  debounceFSM_update();
+  delay(5);
+}
+
+void debounceFSM_init(void) {
+  estadoActual = BUTTON_UP;
+}
+
+void debounceFSM_update(void) {
+ 
+  switch (estadoActual) {
+    case BUTTON_UP:
+      ultVez = millis();
+      if (digitalRead(BUTTON) == LOW){
+        estadoActual = BUTTON_FALLING;
+      }
+      break;
+
+    case BUTTON_DOWN:
+      ultVez = millis();
+      if (digitalRead(BUTTON) == HIGH) {
+        estadoActual = BUTTON_RISING;
+      }
+      break;
+
+    case BUTTON_FALLING:
+      if (millis() - ultVez >= RETARD) {
+        ultVez = millis();
+        if (digitalRead(BUTTON) == LOW){
+          buttonPressed();
+          estadoActual = BUTTON_DOWN;
+        } else estadoActual = BUTTON_UP;
+      }
+      break;
+
+    case BUTTON_RISING:
+      if (millis() - ultVez >= RETARD) {
+        ultVez = millis();
+        if (digitalRead(BUTTON) == HIGH) {
+          estadoActual = BUTTON_UP;
+        } else estadoActual = BUTTON_DOWN;
+      }
+      break;
+  }
+}
+
+void buttonPressed(void){
+  PORTD = seg[contador];
+  if (contador == MAX) contador = 0;
+  else contador++;
+}
